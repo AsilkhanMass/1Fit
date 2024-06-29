@@ -10,4 +10,7 @@ public class OneFitApplication {
         SpringApplication.run(OneFitApplication.class, args);
     }
 
+
+
+
 }
