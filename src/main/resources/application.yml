@@ -22,3 +22,7 @@ jwt:
       mills: 120000
     secret:
       key: tliBHq4zdrliA4e2MhdeIyua3m3LnvIQW56HkbaasC7aSz76WFcE+z0YtnvQPNXNocnSYifRL5ogcrLDFQIO0w==
+telegram:
+  bot:
+    name: OneFit
+    token: 7230181027:AAEC1YmxngpeAQfVfzvhElXG-807s_3vjH8
