@@ -90,9 +90,9 @@ public class TelegramBot extends TelegramLongPollingBot {
             details.append("Conditions: ").append(sportType.getConditions()).append("\n");
             details.append("Location: ").append(sportType.getLocation()).append("\n");
 
-            sendMessage(String.valueOf(chatId), details.toString());
+            sendMessageWithKeyboard(chatId, details.toString());
         } else {
-            sendMessage(String.valueOf(chatId), "Sport type not found!");
+            sendMessageWithKeyboard(chatId, "Sport type not found!");
         }
     }
 
