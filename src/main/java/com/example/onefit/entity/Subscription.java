@@ -18,4 +18,5 @@ public class Subscription {
     @OneToOne
     private SportTypes sportId;
     private Short numberOfVisits;
+    private Boolean isActive;
 }
