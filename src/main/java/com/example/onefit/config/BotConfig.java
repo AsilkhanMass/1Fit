@@ -11,11 +11,11 @@ import org.springframework.context.annotation.PropertySource;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-@PropertySource("application.yml")
+@PropertySource("application.properties")
 public class BotConfig {
 
-    @Value("${bot.name}")
+    @Value("${name}")
     String botName;
-    @Value("${bot.key}")
+    @Value("${token}")
     String botToken;
 }
