@@ -2,7 +2,6 @@ package com.example.onefit.service;
 
 import com.example.onefit.config.BotConfig;
 import com.example.onefit.entity.SportTypeEntity;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.bots.TelegramLongPollingBot;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
@@ -23,8 +22,9 @@ public class TelegramBot extends TelegramLongPollingBot {
     private final BotConfig botConfig;
     private final SportTypeService sportTypeService;
 
-    @Autowired
+
     public TelegramBot(BotConfig botConfig, SportTypeService sportTypeService) {
+        super(botConfig.getBotToken());
         this.botConfig = botConfig;
         this.sportTypeService = sportTypeService;
     }
@@ -37,12 +37,16 @@ public class TelegramBot extends TelegramLongPollingBot {
             switch (message) {
                 case "/start" -> startCommand(chatId, update.getMessage().getChat().getFirstName());
                 case "Subscription" -> showSportTypes(chatId);
+                case "☎️ Contact" -> checkingIfExist(chatId);
             }
         } else if (update.hasCallbackQuery()) {
             String callbackData = update.getCallbackQuery().getData();
             long chatId = update.getCallbackQuery().getMessage().getChatId();
             showSportTypeDetails(chatId, callbackData);
         }
+    }
+
+    private void checkingIfExist(long chatId) {
     }
 
     private void startCommand(long chatId, String name) {
@@ -97,7 +101,7 @@ public class TelegramBot extends TelegramLongPollingBot {
             StringBuilder details = new StringBuilder();
             details.append("Name: ").append(sportType.getName()).append("\n");
             details.append("Price: $").append(sportType.getPrice()).append("\n");
-            details.append("Limit: ").append(sportType.getLimit()).append(" times per month\n");
+            details.append("Limit: ").append(sportType.getLimitation()).append(" times per month\n");
             details.append("Description: ").append(sportType.getDescription()).append("\n");
             details.append("Location: ").append(sportType.getLocation()).append("\n");
 
@@ -139,10 +143,6 @@ public class TelegramBot extends TelegramLongPollingBot {
         return botConfig.getBotName();
     }
 
-    @Override
-    public String getBotToken() {
-        return botConfig.getBotToken();
-    }
 }
 
 /*

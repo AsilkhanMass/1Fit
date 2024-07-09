@@ -41,7 +41,7 @@ public class SportTypeServiceImpl implements SportTypeService {
         existingSportType.setDescription(sportType.getDescription());
         existingSportType.setPrice(sportType.getPrice());
         existingSportType.setLocation(sportType.getLocation());
-        existingSportType.setLimit(sportType.getLimit());
+        existingSportType.setLimitation(sportType.getLimitation());
         return repository.save(existingSportType);
     }
 
