@@ -2,6 +2,7 @@ package com.example.onefit.service;
 
 import com.example.onefit.config.BotConfig;
 import com.example.onefit.entity.SportTypeEntity;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.bots.TelegramLongPollingBot;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
@@ -44,9 +45,6 @@ public class TelegramBot extends TelegramLongPollingBot {
             long chatId = update.getCallbackQuery().getMessage().getChatId();
             showSportTypeDetails(chatId, callbackData);
         }
-    }
-
-    private void checkingIfExist(long chatId) {
     }
 
     private void startCommand(long chatId, String name) {
@@ -143,6 +141,10 @@ public class TelegramBot extends TelegramLongPollingBot {
         return botConfig.getBotName();
     }
 
+    @Override
+    public String getBotToken() {
+        return botConfig.getBotToken();
+    }
 }
 
 /*
