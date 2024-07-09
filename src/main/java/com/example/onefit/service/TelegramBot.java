@@ -1,6 +1,8 @@
 package com.example.onefit.service;
 
 import com.example.onefit.config.BotConfig;
+import com.example.onefit.entity.SportTypeEntity;
+import com.example.onefit.service.imp.SportTypeServiceImpl;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.bots.TelegramLongPollingBot;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
@@ -19,6 +21,7 @@ import java.util.List;
 public class TelegramBot extends TelegramLongPollingBot {
 
     private final BotConfig botConfig;
+    private SportTypeServiceImpl sportTypeServiceImpl;
 
     public TelegramBot(BotConfig botConfig) {
         this.botConfig = botConfig;
@@ -54,7 +57,7 @@ public class TelegramBot extends TelegramLongPollingBot {
         }
     }
     private void showSportTypes(long chatId) {
-        List<SportType> sportTypes = sportTypeService.getAllSportTypes();
+        List<SportTypeEntity> sportTypes = sportTypeServiceImpl.getAllSportTypes();
         SendMessage message = new SendMessage();
         message.setChatId(String.valueOf(chatId));
         message.setText("Available Sport Types:");
@@ -62,7 +65,7 @@ public class TelegramBot extends TelegramLongPollingBot {
         InlineKeyboardMarkup markup = new InlineKeyboardMarkup();
         List<List<InlineKeyboardButton>> rows = new ArrayList<>();
 
-        for (SportType sportType : sportTypes) {
+        for (SportTypeEntity sportType : sportTypes) {
             List<InlineKeyboardButton> row = new ArrayList<>();
             InlineKeyboardButton button = new InlineKeyboardButton();
             button.setText(sportType.getName() + " - $" + sportType.getPrice());
@@ -81,13 +84,13 @@ public class TelegramBot extends TelegramLongPollingBot {
         }
     }
     private void showSportTypeDetails(long chatId, String sportTypeId) {
-        SportType sportType = sportTypeService.getSportTypeById(Long.parseLong(sportTypeId));
+        SportTypeEntity sportType = sportTypeServiceImpl.getSportTypeById(Long.parseLong(sportTypeId));
         if (sportType != null) {
             StringBuilder details = new StringBuilder();
             details.append("Name: ").append(sportType.getName()).append("\n");
             details.append("Price: $").append(sportType.getPrice()).append("\n");
             details.append("Limit: ").append(sportType.getLimit()).append(" times per month\n");
-            details.append("Conditions: ").append(sportType.getConditions()).append("\n");
+            details.append("Description: ").append(sportType.getDescription()).append("\n");
             details.append("Location: ").append(sportType.getLocation()).append("\n");
 
             sendMessageWithKeyboard(chatId, details.toString());
@@ -105,6 +108,10 @@ public class TelegramBot extends TelegramLongPollingBot {
         KeyboardButton locationButton = new KeyboardButton("📍 Location");
         locationButton.setRequestLocation(true);
         row1.add(locationButton);
+
+        KeyboardButton sportsButton = new KeyboardButton("\uD83C\uDFC3\u200D♂\uFE0F Sports");
+        locationButton.setRequestLocation(true);
+        row1.add(sportsButton);
 
         KeyboardRow row2 = new KeyboardRow();
         row2.add(new KeyboardButton("Subscription"));
