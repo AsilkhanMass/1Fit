@@ -21,5 +21,5 @@ public class SportTypeEntity {
     private String description;
     private BigDecimal price;
     private String location;
-    private short limit;
+    private Short limit;
 }

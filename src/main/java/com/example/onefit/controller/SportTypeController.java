@@ -25,8 +25,8 @@ public class SportTypeController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<SportTypeEntity> updateSportType(@PathVariable Long id, @RequestBody SportTypeEntity sportType) {
-        SportTypeEntity updatedSportType = service.updateSportType(id, sportType);
+    public ResponseEntity<SportTypeEntity> updateSportType(@RequestBody SportTypeEntity sportType) {
+        SportTypeEntity updatedSportType = service.updateSportType(sportType);
         return new ResponseEntity<>(updatedSportType, HttpStatus.OK);
     }
 

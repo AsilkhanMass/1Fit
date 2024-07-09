@@ -6,7 +6,7 @@ import java.util.List;
 
 public interface SportTypeService {
     SportTypeEntity createSportType(SportTypeEntity sportType);
-    SportTypeEntity updateSportType(Long id, SportTypeEntity sportType);
+    SportTypeEntity updateSportType(SportTypeEntity sportType);
     List<SportTypeEntity> getAllSportTypes();
     SportTypeEntity getSportTypeById(Long id);
     void deleteSportType(Long id);
