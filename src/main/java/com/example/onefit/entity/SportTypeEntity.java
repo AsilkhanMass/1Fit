@@ -1,15 +1,15 @@
 package com.example.onefit.entity;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
+
+import java.math.BigDecimal;
 
 @Getter
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
+@Builder
 @Entity
 @Table(name = "sport_type")
 public class SportTypeEntity {
@@ -19,7 +19,7 @@ public class SportTypeEntity {
     private Long id;
     private String name;
     private String description;
-    private String price;
+    private BigDecimal price;
     private String location;
-    private String limit;
+    private short limit;
 }
