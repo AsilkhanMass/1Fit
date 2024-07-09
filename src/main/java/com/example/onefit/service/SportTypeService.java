@@ -9,4 +9,5 @@ public interface SportTypeService {
     SportTypeEntity updateSportType(Long id, SportTypeEntity sportType);
     List<SportTypeEntity> getAllSportTypes();
     SportTypeEntity getSportTypeById(Long id);
+    void deleteSportType(Long id);
 }
