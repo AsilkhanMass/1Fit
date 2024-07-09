@@ -8,7 +8,7 @@ import java.util.Optional;
 public interface SubscriptionService {
     Subscription createSubscription(Subscription subscription);
 
-    Optional<Subscription> updateSubscription(Long id, Subscription subscription);
+    Optional<Subscription> updateSubscription(Subscription subscription);
 
     void deleteSubscription(Long id);
 
