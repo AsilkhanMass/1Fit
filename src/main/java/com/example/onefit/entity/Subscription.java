@@ -16,6 +16,7 @@ public class Subscription {
     @ManyToOne
     private UserEntity userId;
     @OneToOne
-    private SportTypes sportId;
+    private SportTypeEntity sportId;
     private Short numberOfVisits;
+    private Boolean isActive;
 }
