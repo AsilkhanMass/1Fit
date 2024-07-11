@@ -49,8 +49,8 @@ public class SportTypeServiceImpl implements SportTypeService {
         if(existingSportType.getLocation()!=null){
             existingSportType.setLocation(sportType.getLocation());
         }
-        if(existingSportType.getLimit()!=null){
-            existingSportType.setLimit(sportType.getLimit());
+        if(existingSportType.getLimitation()!=null){
+            existingSportType.setLimitation(sportType.getLimitation());
         }
         return repository.save(existingSportType);
     }
@@ -73,4 +73,5 @@ public class SportTypeServiceImpl implements SportTypeService {
         }
         repository.deleteById(id);
     }
+
 }
