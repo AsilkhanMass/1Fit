@@ -31,17 +31,27 @@ public class SportTypeServiceImpl implements SportTypeService {
 
     @Override
     @Transactional
-    public SportTypeEntity updateSportType(Long id, SportTypeEntity sportType) {
-        Optional<SportTypeEntity> sportTypeOptional = repository.findById(id);
+    public SportTypeEntity updateSportType(SportTypeEntity sportType) {
+        Optional<SportTypeEntity> sportTypeOptional = repository.findById(sportType.getId());
         if (sportTypeOptional.isEmpty()) {
             throw new SportTypeNotFoundException("SportType not found");
         }
         SportTypeEntity existingSportType = sportTypeOptional.get();
-        existingSportType.setName(sportType.getName());
-        existingSportType.setDescription(sportType.getDescription());
-        existingSportType.setPrice(sportType.getPrice());
-        existingSportType.setLocation(sportType.getLocation());
-        existingSportType.setLimit(sportType.getLimit());
+        if(sportType.getName()!=null){
+            existingSportType.setName(sportType.getName());
+        }
+        if(existingSportType.getDescription()!=null){
+            existingSportType.setDescription(sportType.getDescription());
+        }
+        if(existingSportType.getPrice()!=null){
+            existingSportType.setPrice(sportType.getPrice());
+        }
+        if(existingSportType.getLocation()!=null){
+            existingSportType.setLocation(sportType.getLocation());
+        }
+        if(existingSportType.getLimitation()!=null){
+            existingSportType.setLimitation(sportType.getLimitation());
+        }
         return repository.save(existingSportType);
     }
 
@@ -63,4 +73,5 @@ public class SportTypeServiceImpl implements SportTypeService {
         }
         repository.deleteById(id);
     }
+
 }

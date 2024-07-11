@@ -1,20 +1,27 @@
+
 spring:
   datasource:
     driver-class-name: org.postgresql.Driver
-    url: jdbc:postgresql://localhost:5432/postgres
+    url: jdbc:postgresql://localhost:5432/exam
     username: postgres
-    password: /
+    password: 1234
   jpa:
     hibernate:
-      ddl-auto: create
+      ddl-auto: create-drop
     show-sql: true
-
 
   sql:
     init:
       data-locations: classpath:static/db/data.sql
       schema-locations: classpath:static/db/schema.sql
       mode: never
+  application:
+    name: onefit
+#  liquibase:
+#    change-log: classpath:db/changelog/db.changelog-master.xml
+#    contexts: production, test, development
+#    enabled: true
+
 
 jwt:
   token:

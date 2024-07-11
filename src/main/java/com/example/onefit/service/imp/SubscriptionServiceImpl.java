@@ -25,13 +25,20 @@ public class SubscriptionServiceImpl implements SubscriptionService {
     }
 
     @Override
-    public Optional<Subscription> updateSubscription(Long id, Subscription subscription) {
-        Optional<Subscription> existingSubscription = subscriptionRepository.findById(id);
+    public Optional<Subscription> updateSubscription(Subscription subscription) {
+        Optional<Subscription> existingSubscription = subscriptionRepository.findById(subscription.getId());
         if (existingSubscription.isPresent()) {
+
             Subscription sub = existingSubscription.get();
-            sub.setUserId(subscription.getUserId());
-            sub.setSportId(subscription.getSportId());
-            sub.setNumberOfVisits(subscription.getNumberOfVisits());
+            if (subscription.getUserId() != null) {
+                sub.setUserId(subscription.getUserId());
+            }
+            if (subscription.getSportId() != null) {
+                sub.setSportId(subscription.getSportId());
+            }
+            if (subscription.getNumberOfVisits() != null) {
+                sub.setNumberOfVisits(subscription.getNumberOfVisits());
+            }
             return Optional.of(subscriptionRepository.save(sub));
         }
         return Optional.empty();

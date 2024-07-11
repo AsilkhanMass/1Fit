@@ -2,6 +2,10 @@ package com.example.onefit.service;
 
 import com.example.onefit.config.BotConfig;
 import com.example.onefit.entity.SportTypeEntity;
+import com.example.onefit.entity.Subscription;
+import com.example.onefit.entity.UserEntity;
+import com.example.onefit.repository.SubscriptionRepository;
+import com.example.onefit.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.bots.TelegramLongPollingBot;
@@ -16,17 +20,26 @@ import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 @Component
 public class TelegramBot extends TelegramLongPollingBot {
 
     private final BotConfig botConfig;
     private final SportTypeService sportTypeService;
+    private final UserRepository userRepository;
+    private final SubscriptionRepository subscriptionRepository;
+    private String currentPhoneNumber;
 
     @Autowired
-    public TelegramBot(BotConfig botConfig, SportTypeService sportTypeService) {
+    public TelegramBot(BotConfig botConfig, SportTypeService sportTypeService,
+                       UserRepository userRepository, SubscriptionRepository subscriptionRepository) {
         this.botConfig = botConfig;
         this.sportTypeService = sportTypeService;
+        this.userRepository = userRepository;
+        this.subscriptionRepository = subscriptionRepository;
     }
 
     @Override
@@ -37,11 +50,13 @@ public class TelegramBot extends TelegramLongPollingBot {
             switch (message) {
                 case "/start" -> startCommand(chatId, update.getMessage().getChat().getFirstName());
                 case "Subscription" -> showSportTypes(chatId);
+                case "☎️ Contact" -> promptPhoneNumber(chatId);
+                default -> handlePhoneNumber(chatId, message);
             }
         } else if (update.hasCallbackQuery()) {
             String callbackData = update.getCallbackQuery().getData();
             long chatId = update.getCallbackQuery().getMessage().getChatId();
-            showSportTypeDetails(chatId, callbackData);
+            handleSportSelection(chatId, callbackData);
         }
     }
 
@@ -91,20 +106,53 @@ public class TelegramBot extends TelegramLongPollingBot {
         }
     }
 
-    private void showSportTypeDetails(long chatId, String sportTypeId) {
-        SportTypeEntity sportType = sportTypeService.getSportTypeById(Long.parseLong(sportTypeId));
-        if (sportType != null) {
-            StringBuilder details = new StringBuilder();
-            details.append("Name: ").append(sportType.getName()).append("\n");
-            details.append("Price: $").append(sportType.getPrice()).append("\n");
-            details.append("Limit: ").append(sportType.getLimit()).append(" times per month\n");
-            details.append("Description: ").append(sportType.getDescription()).append("\n");
-            details.append("Location: ").append(sportType.getLocation()).append("\n");
-
-            sendMessageWithKeyboard(chatId, details.toString());
+    private void handleSportSelection(long chatId, String sportTypeId) {
+        Optional<UserEntity> optionalUser = userRepository.findByPhoneNumber(currentPhoneNumber);
+        if (optionalUser.isPresent()) {
+            UserEntity user = optionalUser.get();
+            SportTypeEntity sportType = sportTypeService.getSportTypeById(Long.parseLong(sportTypeId));
+            if (sportType != null) {
+                Subscription subscription = new Subscription();
+                subscription.setUserId(user);
+                subscription.setSportId(sportType);
+                subscription.setNumberOfVisits((short) sportType.getLimitation()); // Assuming limitation is an integer
+                subscription.setIsActive(true);
+                subscriptionRepository.save(subscription);
+                sendMessageWithKeyboard(chatId, "Subscription created successfully for " + sportType.getName());
+            } else {
+                sendMessageWithKeyboard(chatId, "Invalid sport type selected.");
+            }
         } else {
-            sendMessageWithKeyboard(chatId, "Sport type not found!");
+            sendMessageWithKeyboard(chatId, "User not found. Please enter your phone number first.");
         }
+    }
+
+    private void promptPhoneNumber(long chatId) {
+        SendMessage message = new SendMessage();
+        message.setChatId(String.valueOf(chatId));
+        message.setText("Please enter your phone number:");
+        try {
+            execute(message);
+        } catch (TelegramApiException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void handlePhoneNumber(long chatId, String phoneNumber) {
+        if (isValidPhoneNumber(phoneNumber)) {
+            currentPhoneNumber = phoneNumber;
+            String responseMessage = "Thank you! Your phone number is: " + phoneNumber;
+            sendMessageWithKeyboard(chatId, responseMessage);
+        } else {
+            sendMessageWithKeyboard(chatId, "Invalid phone number. Please enter a valid phone number:");
+        }
+    }
+
+    private boolean isValidPhoneNumber(String phoneNumber) {
+        String regex = "\\+9989\\d{8}";
+        Pattern pattern = Pattern.compile(regex);
+        Matcher matcher = pattern.matcher(phoneNumber);
+        return matcher.matches();
     }
 
     private ReplyKeyboardMarkup getMainKeyboard() {
