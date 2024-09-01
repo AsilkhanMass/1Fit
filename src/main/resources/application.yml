@@ -7,14 +7,14 @@ spring:
     password: 1234
   jpa:
     hibernate:
-      ddl-auto: create-drop
+      ddl-auto: update
     show-sql: true
 
   sql:
     init:
-      data-locations: classpath:static/db/data.sql
+#      data-locations: classpath:static/db/*
       schema-locations: classpath:static/db/schema.sql
-      mode: never
+      mode: always
   application:
     name: onefit
 #  liquibase:

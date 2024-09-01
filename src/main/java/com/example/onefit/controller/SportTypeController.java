@@ -19,7 +19,6 @@ public class SportTypeController {
     }
 
     @PostMapping
-
     public ResponseEntity<SportTypeEntity> createSportType(@RequestBody SportTypeEntity sportType) {
         SportTypeEntity createdSportType = service.createSportType(sportType);
         return new ResponseEntity<>(createdSportType, HttpStatus.CREATED);

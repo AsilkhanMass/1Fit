@@ -49,8 +49,8 @@ public class TelegramBot extends TelegramLongPollingBot {
             long chatId = update.getMessage().getChatId();
             switch (message) {
                 case "/start" -> startCommand(chatId, update.getMessage().getChat().getFirstName());
-                case "Subscription" -> showSportTypes(chatId);
                 case "☎️ Contact" -> promptPhoneNumber(chatId);
+                case "\uD83C\uDFC3\u200D♂\uFE0F Sports" -> showSportTypes(chatId);
                 default -> handlePhoneNumber(chatId, message);
             }
         } else if (update.hasCallbackQuery()) {
@@ -144,21 +144,21 @@ public class TelegramBot extends TelegramLongPollingBot {
             String responseMessage = "Thank you! Your phone number is: " + phoneNumber;
             sendMessageWithKeyboard(chatId, responseMessage);
         } else {
-            sendMessageWithKeyboard(chatId, "Invalid phone number. Please enter a valid phone number:");
+            sendMessageWithKeyboard(chatId, "Invalid phone number. Please enter a valid phone number:"+phoneNumber);
         }
     }
 
     private boolean isValidPhoneNumber(String phoneNumber) {
-        String regex = "\\+9989\\d{8}";
+        String regex = "^\\+9989\\d{8}$";
         Pattern pattern = Pattern.compile(regex);
-        Matcher matcher = pattern.matcher(phoneNumber);
+        Matcher matcher = pattern.matcher(phoneNumber.replaceAll("\\s+",""));
         return matcher.matches();
     }
 
     private ReplyKeyboardMarkup getMainKeyboard() {
         KeyboardRow row1 = new KeyboardRow();
         KeyboardButton contactButton = new KeyboardButton("☎️ Contact");
-        contactButton.setRequestContact(true);
+//        contactButton.setRequestContact(true);
         row1.add(contactButton);
 
         KeyboardButton locationButton = new KeyboardButton("📍 Location");
